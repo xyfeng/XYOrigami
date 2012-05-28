@@ -18,7 +18,7 @@
 
 @implementation ViewController
 @synthesize centerView;
-@synthesize rightView;
+@synthesize sideView;
 @synthesize foldsNum;
 @synthesize durationNum;
 @synthesize closeBtn;
@@ -31,7 +31,7 @@
     zoomLocation.latitude = 40.7310;
     zoomLocation.longitude= -73.9977;
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(zoomLocation, 10000, 10000);         
-    [self.rightView setRegion:viewRegion animated:NO];
+    [self.sideView setRegion:viewRegion animated:NO];
     
     currDirection = XYOrigamiDirectionFromLeft;
 }
@@ -39,7 +39,7 @@
 - (void)viewDidUnload
 {
     [self setCenterView:nil];
-    [self setRightView:nil];
+    [self setSideView:nil];
     [self setFoldsNum:nil];
     [self setDurationNum:nil];
     [self setCloseBtn:nil];
@@ -54,7 +54,7 @@
 - (IBAction)swipeLeft:(id)sender {
     if (currDirection == XYOrigamiDirectionFromLeft) {
         self.closeBtn.hidden = YES;
-        [self.centerView hideOrigamiTransitionWith:self.rightView
+        [self.centerView hideOrigamiTransitionWith:self.sideView
                                      NumberOfFolds:[self.foldsNum.text intValue]
                                           Duration:[self.durationNum.text floatValue]
                                          Direction:XYOrigamiDirectionFromLeft
@@ -62,7 +62,7 @@
                                         }];
     }
     else {
-        [self.centerView showOrigamiTransitionWith:self.rightView
+        [self.centerView showOrigamiTransitionWith:self.sideView
                                      NumberOfFolds:[self.foldsNum.text intValue]
                                           Duration:[self.durationNum.text floatValue]
                                          Direction:XYOrigamiDirectionFromRight
@@ -74,7 +74,7 @@
 
 - (IBAction)swipeRight:(id)sender {
     if (currDirection == XYOrigamiDirectionFromLeft) {
-        [self.centerView showOrigamiTransitionWith:self.rightView
+        [self.centerView showOrigamiTransitionWith:self.sideView
                                      NumberOfFolds:[self.foldsNum.text intValue] 
                                           Duration:[self.durationNum.text floatValue]
                                          Direction:XYOrigamiDirectionFromLeft
@@ -84,7 +84,7 @@
     }
     else {
         self.closeBtn.hidden = YES;
-        [self.centerView hideOrigamiTransitionWith:self.rightView
+        [self.centerView hideOrigamiTransitionWith:self.sideView
                                      NumberOfFolds:[self.foldsNum.text intValue]
                                           Duration:[self.durationNum.text floatValue]
                                          Direction:XYOrigamiDirectionFromRight
@@ -94,7 +94,7 @@
 }
 
 - (IBAction)showMap:(id)sender {
-    [self.centerView showOrigamiTransitionWith:self.rightView
+    [self.centerView showOrigamiTransitionWith:self.sideView
                                  NumberOfFolds:[self.foldsNum.text intValue]
                                       Duration:[self.durationNum.text floatValue]
                                      Direction:currDirection
@@ -125,7 +125,7 @@
 
 - (IBAction)hideMap:(id)sender {
     self.closeBtn.hidden = YES;
-    [self.centerView hideOrigamiTransitionWith:self.rightView
+    [self.centerView hideOrigamiTransitionWith:self.sideView
                                  NumberOfFolds:[self.foldsNum.text intValue]
                                       Duration:[self.durationNum.text floatValue]
                                      Direction:currDirection

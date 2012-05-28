@@ -432,19 +432,19 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
-						<string key="label">rightView</string>
-						<reference key="source" ref="372490531"/>
-						<reference key="destination" ref="444091083"/>
-					</object>
-					<int key="connectionID">32</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">view</string>
 						<reference key="source" ref="372490531"/>
 						<reference key="destination" ref="804550343"/>
 					</object>
 					<int key="connectionID">33</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">sideView</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="444091083"/>
+					</object>
+					<int key="connectionID">41</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -596,7 +596,7 @@
 						<int key="objectID">12</int>
 						<reference key="object" ref="444091083"/>
 						<reference key="parent" ref="804550343"/>
-						<string key="objectName">rightView</string>
+						<string key="objectName">sideView</string>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">13</int>
@@ -706,7 +706,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">40</int>
+			<int key="maxID">41</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -718,7 +718,7 @@
 						<string key="closeBtn">UIButton</string>
 						<string key="durationNum">UILabel</string>
 						<string key="foldsNum">UILabel</string>
-						<string key="rightView">MKMapView</string>
+						<string key="sideView">MKMapView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="centerView">
@@ -737,8 +737,8 @@
 							<string key="name">foldsNum</string>
 							<string key="candidateClassName">UILabel</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="rightView">
-							<string key="name">rightView</string>
+						<object class="IBToOneOutletInfo" key="sideView">
+							<string key="name">sideView</string>
 							<string key="candidateClassName">MKMapView</string>
 						</object>
 					</dictionary>

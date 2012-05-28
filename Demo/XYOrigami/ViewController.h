@@ -11,7 +11,7 @@
 
 @interface ViewController : UIViewController
 @property (strong, nonatomic) IBOutlet UIView *centerView;
-@property (strong, nonatomic) IBOutlet MKMapView *rightView;
+@property (strong, nonatomic) IBOutlet MKMapView *sideView;
 @property (strong, nonatomic) IBOutlet UILabel *foldsNum;
 @property (strong, nonatomic) IBOutlet UILabel *durationNum;
 @property (strong, nonatomic) IBOutlet UIButton *closeBtn;
