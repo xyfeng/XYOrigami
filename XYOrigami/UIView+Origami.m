@@ -92,7 +92,14 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
     imageLayer.anchorPoint = anchorPoint;
     imageLayer.position = CGPointMake(layerWidth*anchorPoint.x, frame.size.height/2);
     [jointLayer addSublayer:imageLayer];
-    CGImageRef imageCrop = CGImageCreateWithImageInRect(image.CGImage, frame);
+    
+    CGFloat imageScale = image.scale;
+    CGRect scaledFrame = CGRectMake(CGRectGetMinX(frame)*imageScale,
+                                    CGRectGetMinY(frame)*imageScale,
+                                    CGRectGetWidth(frame)*imageScale,
+                                    CGRectGetHeight(frame)*imageScale);
+    
+    CGImageRef imageCrop = CGImageCreateWithImageInRect(image.CGImage, scaledFrame);
     imageLayer.contents = (__bridge id)imageCrop;
     imageLayer.backgroundColor = [UIColor clearColor].CGColor;
     
@@ -166,7 +173,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
         anchorPoint = CGPointMake(0, 0.5);
     }
     
-    UIGraphicsBeginImageContext(view.frame.size);
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0f);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewSnapShot = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -258,7 +265,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
         anchorPoint = CGPointMake(0, 0.5);
     }
     
-    UIGraphicsBeginImageContext(view.frame.size);
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, 0.0f);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewSnapShot = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
