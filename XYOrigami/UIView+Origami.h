@@ -70,4 +70,6 @@ typedef NSUInteger XYOrigamiTransitionState;
                         Direction:(XYOrigamiDirection)direction
                        completion:(void (^)(BOOL finished))completion;
 
++ (void) resetOrigamiState;
+
 @end
