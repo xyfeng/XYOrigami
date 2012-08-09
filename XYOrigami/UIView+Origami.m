@@ -331,5 +331,10 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
     [self.layer addAnimation:openAnimation forKey:@"position"];
     [CATransaction commit];
 }
+
++ (void) resetOrigamiState
+{
+    XY_Origami_Current_State = XYOrigamiTransitionStateIdle;
+}
  
 @end
