@@ -68,56 +68,105 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
 {
     CATransformLayer *jointLayer = [CATransformLayer layer];
     jointLayer.anchorPoint = anchorPoint;
-    CGFloat layerWidth;
-    if (anchorPoint.x == 0) //from left to right
-    {
-        layerWidth = image.size.width - frame.origin.x;
-        jointLayer.frame = CGRectMake(0, 0, layerWidth, frame.size.height);
-        if (frame.origin.x) {
-            jointLayer.position = CGPointMake(frame.size.width, frame.size.height/2);
+    CALayer *imageLayer = [CALayer layer];
+    CAGradientLayer *shadowLayer = [CAGradientLayer layer];
+    double shadowAniOpacity;
+    
+    if (anchorPoint.y == 0.5) {
+        CGFloat layerWidth;
+        if (anchorPoint.x == 0 ) //from left to right
+        {
+            layerWidth = image.size.width - frame.origin.x;
+            jointLayer.frame = CGRectMake(0, 0, layerWidth, frame.size.height);
+            if (frame.origin.x) {
+                jointLayer.position = CGPointMake(frame.size.width, frame.size.height/2);
+            }
+            else {
+                jointLayer.position = CGPointMake(0, frame.size.height/2);
+            }
+        }
+        else { //from right to left
+            layerWidth = frame.origin.x + frame.size.width;
+            jointLayer.frame = CGRectMake(0, 0, layerWidth, frame.size.height);
+            jointLayer.position = CGPointMake(layerWidth, frame.size.height/2);
+        }
+        
+        //map image onto transform layer
+        imageLayer.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+        imageLayer.anchorPoint = anchorPoint;
+        imageLayer.position = CGPointMake(layerWidth*anchorPoint.x, frame.size.height/2);
+        [jointLayer addSublayer:imageLayer];
+        CGImageRef imageCrop = CGImageCreateWithImageInRect(image.CGImage, frame);
+        imageLayer.contents = (__bridge id)imageCrop;
+        imageLayer.backgroundColor = [UIColor clearColor].CGColor;
+        
+        //add shadow
+        NSInteger index = frame.origin.x/frame.size.width;
+        shadowLayer.frame = imageLayer.bounds;
+        shadowLayer.backgroundColor = [UIColor darkGrayColor].CGColor;
+        shadowLayer.opacity = 0.0;
+        shadowLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
+        if (index%2) {
+            shadowLayer.startPoint = CGPointMake(0, 0.5);
+            shadowLayer.endPoint = CGPointMake(1, 0.5);
+            shadowAniOpacity = (anchorPoint.x)?0.24:0.32;
         }
         else {
-            jointLayer.position = CGPointMake(0, frame.size.height/2);
+            shadowLayer.startPoint = CGPointMake(1, 0.5);
+            shadowLayer.endPoint = CGPointMake(0, 0.5);
+            shadowAniOpacity = (anchorPoint.x)?0.32:0.24;
         }
     }
-    else { //from right to left
-        layerWidth = frame.origin.x + frame.size.width;
-        jointLayer.frame = CGRectMake(0, 0, layerWidth, frame.size.height);
-        jointLayer.position = CGPointMake(layerWidth, frame.size.height/2);
+    else{
+        CGFloat layerHeight;
+        if (anchorPoint.y == 0 ) //from top
+        {
+            layerHeight = image.size.height - frame.origin.y;
+            jointLayer.frame = CGRectMake(0, 0, frame.size.width, layerHeight);
+            if (frame.origin.y) {
+                jointLayer.position = CGPointMake(frame.size.width/2, frame.size.height);
+            }
+            else {
+                jointLayer.position = CGPointMake(frame.size.width/2, 0);
+            }
+        }
+        else { //from bottom
+            layerHeight = frame.origin.y + frame.size.height;
+            jointLayer.frame = CGRectMake(0, 0, frame.size.width, layerHeight);
+            jointLayer.position = CGPointMake(frame.size.width/2, layerHeight);
+        }
+        
+        //map image onto transform layer
+        imageLayer.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+        imageLayer.anchorPoint = anchorPoint;
+        imageLayer.position = CGPointMake(frame.size.width/2, layerHeight*anchorPoint.y);
+        [jointLayer addSublayer:imageLayer];
+        CGImageRef imageCrop = CGImageCreateWithImageInRect(image.CGImage, frame);
+        imageLayer.contents = (__bridge id)imageCrop;
+        imageLayer.backgroundColor = [UIColor clearColor].CGColor;
+        
+        //add shadow
+        NSInteger index = frame.origin.y/frame.size.height;
+        shadowLayer.frame = imageLayer.bounds;
+        shadowLayer.backgroundColor = [UIColor darkGrayColor].CGColor;
+        shadowLayer.opacity = 0.0;
+        shadowLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
+        if (index%2) {
+            shadowLayer.startPoint = CGPointMake(0.5, 0);
+            shadowLayer.endPoint = CGPointMake(0.5, 1);
+            shadowAniOpacity = (anchorPoint.x)?0.24:0.32;
+        }
+        else {
+            shadowLayer.startPoint = CGPointMake(0.5, 1);
+            shadowLayer.endPoint = CGPointMake(0.5, 0);
+            shadowAniOpacity = (anchorPoint.x)?0.32:0.24;
+        }
     }
-
-    //map image onto transform layer
-    CALayer *imageLayer = [CALayer layer];
-    imageLayer.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-    imageLayer.anchorPoint = anchorPoint;
-    imageLayer.position = CGPointMake(layerWidth*anchorPoint.x, frame.size.height/2);
-    [jointLayer addSublayer:imageLayer];
-    CGImageRef imageCrop = CGImageCreateWithImageInRect(image.CGImage, frame);
-    imageLayer.contents = (__bridge id)imageCrop;
-    imageLayer.backgroundColor = [UIColor clearColor].CGColor;
     
-    //add shadow
-    NSInteger index = frame.origin.x/frame.size.width;
-    double shadowAniOpacity;
-    CAGradientLayer *shadowLayer = [CAGradientLayer layer];
-    shadowLayer.frame = imageLayer.bounds;
-    shadowLayer.backgroundColor = [UIColor darkGrayColor].CGColor;
-    shadowLayer.opacity = 0.0;
-    shadowLayer.colors = [NSArray arrayWithObjects:(id)[UIColor blackColor].CGColor, (id)[UIColor clearColor].CGColor, nil];
-    if (index%2) {
-        shadowLayer.startPoint = CGPointMake(0, 0.5);
-        shadowLayer.endPoint = CGPointMake(1, 0.5);
-        shadowAniOpacity = (anchorPoint.x)?0.24:0.32;
-    }
-    else {
-        shadowLayer.startPoint = CGPointMake(1, 0.5);
-        shadowLayer.endPoint = CGPointMake(0, 0.5);
-        shadowAniOpacity = (anchorPoint.x)?0.32:0.24;
-    }
     [imageLayer addSublayer:shadowLayer];
     
     //animate open/close animation
-    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.y"];
+    CABasicAnimation* animation = (anchorPoint.y == 0.5)?[CABasicAnimation animationWithKeyPath:@"transform.rotation.y"]:[CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
     [animation setDuration:duration];
     [animation setFromValue:[NSNumber numberWithDouble:start]];
     [animation setToValue:[NSNumber numberWithDouble:end]];
@@ -159,11 +208,23 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
         
         anchorPoint = CGPointMake(1, 0.5);
     }
-    else {
+    else if(direction == XYOrigamiDirectionFromLeft){
         selfFrame.origin.x = self.frame.origin.x + view.bounds.size.width;
         view.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, view.frame.size.width, view.frame.size.height);
         
         anchorPoint = CGPointMake(0, 0.5);
+    }
+    else if(direction == XYOrigamiDirectionFromTop){
+        selfFrame.origin.y = self.frame.origin.y + view.bounds.size.height;
+        view.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, view.frame.size.width, view.frame.size.height);
+        
+        anchorPoint = CGPointMake(0.5, 0);
+    }
+    else if(direction == XYOrigamiDirectionFromBottom){
+        selfFrame.origin.y = self.frame.origin.y - view.bounds.size.height;
+        view.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y+self.frame.size.height-view.frame.size.height, view.frame.size.width, view.frame.size.height);
+        
+        anchorPoint = CGPointMake(0.5, 1);
     }
     
     UIGraphicsBeginImageContext(view.frame.size);
@@ -184,7 +245,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
     double startAngle;
     CGFloat frameWidth = view.bounds.size.width;
     CGFloat frameHeight = view.bounds.size.height;
-    CGFloat foldWidth = frameWidth/(folds*2);
+    CGFloat foldWidth = (direction < 2)?frameWidth/(folds*2):frameHeight/(folds*2);
     CALayer *prevLayer = origamiLayer;
     for (int b=0; b < folds*2; b++) {
         CGRect imageFrame;
@@ -199,7 +260,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
             }
             imageFrame = CGRectMake(frameWidth-(b+1)*foldWidth, 0, foldWidth, frameHeight);
         }
-        else {
+        else if(direction == XYOrigamiDirectionFromLeft){
             if(b == 0)
                 startAngle = M_PI_2;
             else {
@@ -209,6 +270,28 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
                     startAngle = M_PI;
             }
             imageFrame = CGRectMake(b*foldWidth, 0, foldWidth, frameHeight);
+        }
+        else if(direction == XYOrigamiDirectionFromTop){
+            if(b == 0)
+                startAngle = -M_PI_2;
+            else {
+                if (b%2)
+                    startAngle = M_PI;
+                else
+                    startAngle = -M_PI;
+            }
+            imageFrame = CGRectMake(0, b*foldWidth, frameWidth, foldWidth);
+        }
+        else if(direction == XYOrigamiDirectionFromBottom){
+            if(b == 0)
+                startAngle = M_PI_2;
+            else {
+                if (b%2)
+                    startAngle = -M_PI;
+                else
+                    startAngle = M_PI;
+            }
+            imageFrame = CGRectMake(0, frameHeight-(b+1)*foldWidth, frameWidth, foldWidth);
         }
         CATransformLayer *transLayer = [self transformLayerFromImage:viewSnapShot Frame:imageFrame Duration:duration AnchorPiont:anchorPoint StartAngle:startAngle EndAngle:0];
         [prevLayer addSublayer:transLayer];
@@ -226,13 +309,12 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
     }];
     
     [CATransaction setValue:[NSNumber numberWithFloat:duration] forKey:kCATransactionAnimationDuration];
-    CAAnimation *openAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position.x" function:openFunction fromValue:self.frame.origin.x+self.frame.size.width/2 toValue:selfFrame.origin.x+self.frame.size.width/2];
+    CAAnimation *openAnimation = (direction < 2)?[CAKeyframeAnimation animationWithKeyPath:@"position.x" function:openFunction fromValue:self.frame.origin.x+self.frame.size.width/2 toValue:selfFrame.origin.x+self.frame.size.width/2]:[CAKeyframeAnimation animationWithKeyPath:@"position.y" function:openFunction fromValue:self.frame.origin.y+self.frame.size.height/2 toValue:selfFrame.origin.y+self.frame.size.height/2];
     openAnimation.fillMode = kCAFillModeForwards;
     [openAnimation setRemovedOnCompletion:NO];
     [self.layer addAnimation:openAnimation forKey:@"position"];
     [CATransaction commit];
 }
-
 
 - (void)hideOrigamiTransitionWith:(UIView *)view
                     NumberOfFolds:(NSInteger)folds
@@ -253,9 +335,17 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
         selfFrame.origin.x = self.frame.origin.x + view.bounds.size.width;
         anchorPoint = CGPointMake(1, 0.5);
     }
-    else {
+    else if (direction == XYOrigamiDirectionFromLeft){
         selfFrame.origin.x = self.frame.origin.x - view.bounds.size.width;
         anchorPoint = CGPointMake(0, 0.5);
+    }
+    else if (direction == XYOrigamiDirectionFromTop){
+        selfFrame.origin.y = self.frame.origin.y - view.bounds.size.height;
+        anchorPoint = CGPointMake(0.5, 0);
+    }
+    else if (direction == XYOrigamiDirectionFromBottom){
+        selfFrame.origin.y = self.frame.origin.y + view.bounds.size.height;
+        anchorPoint = CGPointMake(0.5, 1);
     }
     
     UIGraphicsBeginImageContext(view.frame.size);
@@ -276,7 +366,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
     double endAngle;
     CGFloat frameWidth = view.bounds.size.width;
     CGFloat frameHeight = view.bounds.size.height;
-    CGFloat foldWidth = frameWidth/(folds*2);
+    CGFloat foldWidth = (direction < 2)?frameWidth/(folds*2):frameHeight/(folds*2);
     CALayer *prevLayer = origamiLayer;
     for (int b=0; b < folds*2; b++) {
         CGRect imageFrame;
@@ -291,7 +381,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
             }
             imageFrame = CGRectMake(frameWidth-(b+1)*foldWidth, 0, foldWidth, frameHeight);
         }
-        else {
+        else if(direction == XYOrigamiDirectionFromLeft){
             if(b == 0)
                 endAngle = M_PI_2;
             else {
@@ -301,6 +391,28 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
                     endAngle = M_PI;
             }
             imageFrame = CGRectMake(b*foldWidth, 0, foldWidth, frameHeight);
+        }
+        else if(direction == XYOrigamiDirectionFromTop){
+            if(b == 0)
+                endAngle = -M_PI_2;
+            else {
+                if (b%2)
+                    endAngle = M_PI;
+                else
+                    endAngle = -M_PI;
+            }
+            imageFrame = CGRectMake(0, b*foldWidth, frameWidth, foldWidth);
+        }
+        else if(direction == XYOrigamiDirectionFromBottom){
+            if(b == 0)
+                endAngle = M_PI_2;
+            else {
+                if (b%2)
+                    endAngle = -M_PI;
+                else
+                    endAngle = M_PI;
+            }
+            imageFrame = CGRectMake(0, frameHeight-(b+1)*foldWidth, frameWidth, foldWidth);
         }
         CATransformLayer *transLayer = [self transformLayerFromImage:viewSnapShot Frame:imageFrame Duration:duration AnchorPiont:anchorPoint StartAngle:0 EndAngle:endAngle];
         [prevLayer addSublayer:transLayer];
@@ -318,7 +430,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
     }];
     
     [CATransaction setValue:[NSNumber numberWithFloat:duration] forKey:kCATransactionAnimationDuration];
-    CAAnimation *openAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position.x" function:closeFunction fromValue:self.frame.origin.x+self.frame.size.width/2 toValue:selfFrame.origin.x+self.frame.size.width/2];
+    CAAnimation *openAnimation = (direction < 2)?[CAKeyframeAnimation animationWithKeyPath:@"position.x" function:closeFunction fromValue:self.frame.origin.x+self.frame.size.width/2 toValue:selfFrame.origin.x+self.frame.size.width/2]:[CAKeyframeAnimation animationWithKeyPath:@"position.y" function:closeFunction fromValue:self.frame.origin.y+self.frame.size.height/2 toValue:selfFrame.origin.y+self.frame.size.height/2];
     openAnimation.fillMode = kCAFillModeForwards;
     [openAnimation setRemovedOnCompletion:NO];
     [self.layer addAnimation:openAnimation forKey:@"position"];

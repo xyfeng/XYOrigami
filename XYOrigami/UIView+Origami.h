@@ -43,14 +43,16 @@ typedef double (^KeyframeParametricBlock)(double);
 
 enum {
 	XYOrigamiDirectionFromRight     = 0,
-	XYOrigamiDirectionFromLeft      = 1 << 0
+	XYOrigamiDirectionFromLeft      = 1,
+    XYOrigamiDirectionFromTop       = 2,
+    XYOrigamiDirectionFromBottom    = 3,
 };
 typedef NSUInteger XYOrigamiDirection;
 
 enum {
 	XYOrigamiTransitionStateIdle    = 0,
-	XYOrigamiTransitionStateUpdate  = 1 << 0,
-	XYOrigamiTransitionStateShow    = 2 << 0
+	XYOrigamiTransitionStateUpdate  = 1,
+	XYOrigamiTransitionStateShow    = 2
 };
 typedef NSUInteger XYOrigamiTransitionState;
 
