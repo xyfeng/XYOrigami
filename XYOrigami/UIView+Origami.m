@@ -98,6 +98,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
         [jointLayer addSublayer:imageLayer];
         CGImageRef imageCrop = CGImageCreateWithImageInRect(image.CGImage, frame);
         imageLayer.contents = (__bridge id)imageCrop;
+        CGImageRelease(imageCrop);
         imageLayer.backgroundColor = [UIColor clearColor].CGColor;
         
         //add shadow
@@ -143,6 +144,7 @@ static XYOrigamiTransitionState XY_Origami_Current_State = XYOrigamiTransitionSt
         [jointLayer addSublayer:imageLayer];
         CGImageRef imageCrop = CGImageCreateWithImageInRect(image.CGImage, frame);
         imageLayer.contents = (__bridge id)imageCrop;
+        CGImageRelease(imageCrop);
         imageLayer.backgroundColor = [UIColor clearColor].CGColor;
         
         //add shadow
